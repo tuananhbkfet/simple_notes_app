@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
@@ -13,6 +13,8 @@ export function NotesApp() {
   const [newNoteContent, setNewNoteContent] = useState("");
   const [editingId, setEditingId] = useState<Id<"notes"> | null>(null);
   const [editContent, setEditContent] = useState("");
+  const [sortType, setSortType] = useState<'newest' | 'oldest' | 'alphabetical' | 'reverseAlphabetical'>('newest');
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const handleCreateNote = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +73,44 @@ export function NotesApp() {
       second: "2-digit",
     });
   };
+  
+  const getSortedNotes = () => {
+    if (sortType === 'newest') {
+      return [...notes].sort((a, b) => b._creationTime - a._creationTime);
+    } else if (sortType === 'oldest') {
+      return [...notes].sort((a, b) => a._creationTime - b._creationTime);
+    } else if (sortType === 'alphabetical') {
+      return [...notes].sort((a, b) => a.content.localeCompare(b.content, 'vi'));
+    } else if (sortType === 'reverseAlphabetical') {
+      return [...notes].sort((a, b) => b.content.localeCompare(a.content, 'vi'));
+    }
+    return notes;
+  };
+
+  // Theo dõi sự kiện cuộn và hiển thị nút khi cuộn xuống dưới
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
+  // Hàm di chuyển lên đầu trang
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -96,6 +136,26 @@ export function NotesApp() {
         </form>
       </div>
 
+      {/* Sort Controls */}
+      {notes.length > 0 && (
+        <div className="flex justify-end items-center space-x-2">
+          <label htmlFor="sort-select" className="text-sm font-medium text-gray-600">
+            Sắp xếp:
+          </label>
+          <select
+            id="sort-select"
+            value={sortType}
+            onChange={(e) => setSortType(e.target.value as 'newest' | 'oldest' | 'alphabetical' | 'reverseAlphabetical')}
+            className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="alphabetical">Từ A-Z</option>
+            <option value="reverseAlphabetical">Từ Z-A</option>
+          </select>
+        </div>
+      )}
+
       {/* Notes List */}
       <div className="space-y-4">
         {notes.length === 0 ? (
@@ -105,7 +165,7 @@ export function NotesApp() {
             <p className="text-gray-500">Tạo ghi chú đầu tiên của bạn ở trên</p>
           </div>
         ) : (
-          notes.map((note) => (
+          getSortedNotes().map((note) => (
             <div
               key={note._id}
               className="group bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-200 hover:shadow-md hover:border-gray-300 hover:-translate-y-0.5"
@@ -171,6 +231,20 @@ export function NotesApp() {
           ))
         )}
       </div>
+
+      {/* Scroll to top button */}
+      {showScrollTop && (
+        <button 
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 focus:outline-none"
+          aria-label="Lên đầu trang"
+          title="Lên đầu trang"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }
