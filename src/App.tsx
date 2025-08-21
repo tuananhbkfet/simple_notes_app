@@ -8,11 +8,21 @@ import { UserAccountMenu } from "./UserAccountMenu";
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
-        <h2 className="text-xl font-semibold text-gray-800">Ghi chú nhanh</h2>
-        <Authenticated>
-          <UserAccountMenu />
-        </Authenticated>
+      <header className="sticky top-0 z-10">
+        <div className="bg-[#C4282B] h-16 flex justify-between items-center px-4 shadow-sm">
+          <h2 className="text-2xl font-bold text-white w-[200px]">GHI CHÚ NHANH</h2>
+          <div className="flex-1 overflow-hidden mx-4">
+            <div className="whitespace-nowrap animate-marquee text-center text-yellow-400 font-bold">
+              ★ VIỆT NAM ★ VIỆT NAM ★ VIỆT NAM ★ 
+              VIỆT NAM ★ VIỆT NAM ★ VIỆT NAM ★ VIỆT NAM ★
+            </div>
+          </div>
+          <div className="w-[200px] flex justify-end">
+            <Authenticated>
+              <UserAccountMenu />
+            </Authenticated>
+          </div>
+        </div>
       </header>
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-2xl mx-auto">

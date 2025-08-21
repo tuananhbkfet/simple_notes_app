@@ -137,7 +137,13 @@ export function NotesApp() {
                 </div>
               ) : (
                 <div>
-                  <div className="flex justify-end mb-4">
+                  <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base mb-4">
+                    {note.content}
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-gray-400 italic">
+                      {formatDate(note._creationTime)}
+                    </div>
                     <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <button
                         onClick={() => handleEditNote(note._id, note.content)}
@@ -157,14 +163,6 @@ export function NotesApp() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
-                    </div>
-                  </div>
-                  <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base mb-2">
-                    {note.content}
-                  </div>
-                  <div className="flex justify-end">
-                    <div className="text-sm text-gray-400 italic">
-                      {formatDate(note._creationTime)}
                     </div>
                   </div>
                 </div>
