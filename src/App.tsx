@@ -1,9 +1,9 @@
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { SignInForm } from "./SignInForm";
-import { SignOutButton } from "./SignOutButton";
 import { Toaster } from "sonner";
 import { NotesApp } from "./NotesApp";
+import { UserAccountMenu } from "./UserAccountMenu";
 
 export default function App() {
   return (
@@ -11,7 +11,7 @@ export default function App() {
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
         <h2 className="text-xl font-semibold text-gray-800">Ghi chú nhanh</h2>
         <Authenticated>
-          <SignOutButton />
+          <UserAccountMenu />
         </Authenticated>
       </header>
       <main className="flex-1 flex items-center justify-center p-4">
