@@ -50,7 +50,7 @@ export function UserAccountMenu() {
             <p className="font-semibold">Đăng nhập với</p>
             <p className="truncate">{userName}</p>
           </div>
-          <div className="p-1">
+          <div className="p-1 flex justify-center">
             <SignOutButton />
           </div>
         </div>
