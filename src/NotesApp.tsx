@@ -137,10 +137,7 @@ export function NotesApp() {
                 </div>
               ) : (
                 <div>
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="text-sm text-gray-500 font-medium">
-                      {formatDate(note._creationTime)}
-                    </div>
+                  <div className="flex justify-end mb-4">
                     <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <button
                         onClick={() => handleEditNote(note._id, note.content)}
@@ -162,8 +159,13 @@ export function NotesApp() {
                       </button>
                     </div>
                   </div>
-                  <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base">
+                  <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base mb-2">
                     {note.content}
+                  </div>
+                  <div className="flex justify-end">
+                    <div className="text-sm text-gray-400 italic">
+                      {formatDate(note._creationTime)}
+                    </div>
                   </div>
                 </div>
               )}
