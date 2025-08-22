@@ -122,6 +122,51 @@ export function NotesApp() {
       behavior: 'smooth'
     });
   };
+  
+  // Hàm xuất dữ liệu notes ra file CSV
+  const exportNotesData = () => {
+    // Nếu không có ghi chú nào
+    if (notes.length === 0) {
+      toast.error("Không có dữ liệu để xuất");
+      return;
+    }
+    
+    // Header cho file CSV
+    const csvHeader = "STT,Nội dung,Trạng thái,Thời gian tạo\n";
+    
+    // Chuyển đổi dữ liệu notes thành định dạng CSV
+    const csvData = getSortedNotes().map((note, index) => {
+      // Thay thế dấu phẩy trong nội dung để tránh xung đột với CSV
+      const content = note.content.replace(/,/g, ";").replace(/\n/g, " ");
+      const status = note.completed ? "Đã hoàn thành" : "Chưa hoàn thành";
+      const creationTime = formatDate(note._creationTime);
+      return `${index + 1},"${content}","${status}","${creationTime}"`;
+    }).join("\n");
+    
+    // Thêm BOM (Byte Order Mark) để đảm bảo Excel hiển thị đúng tiếng Việt
+    const BOM = '\uFEFF';
+    
+    // Tạo Blob từ dữ liệu CSV với BOM ở đầu
+    const blob = new Blob([BOM + csvHeader + csvData], { type: "text/csv;charset=utf-8-sig" });
+    
+    // Tạo URL tạm thời cho Blob
+    const url = URL.createObjectURL(blob);
+    
+    // Tạo phần tử a để tải file
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `notes_export_${new Date().toLocaleDateString().replace(/\//g, "-")}.csv`;
+    
+    // Thêm link vào DOM, kích hoạt click và xóa
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Giải phóng URL tạm thời
+    URL.revokeObjectURL(url);
+    
+    toast.success("Đã xuất dữ liệu thành công");
+  };
 
   return (
     <div className="space-y-6">
@@ -149,38 +194,50 @@ export function NotesApp() {
 
       {/* Sort and Filter Controls */}
       {notes.length > 0 && (
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <label htmlFor="filter-select" className="text-sm font-medium text-gray-600">
-              Trạng thái:
-            </label>
-            <select
-              id="filter-select"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value as 'all' | 'completed' | 'incomplete')}
-              className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">Tất cả</option>
-              <option value="completed">Đã hoàn thành</option>
-              <option value="incomplete">Chưa hoàn thành</option>
-            </select>
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center space-x-2">
+              <label htmlFor="filter-select" className="text-sm font-medium text-gray-600">
+                Trạng thái:
+              </label>
+              <select
+                id="filter-select"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value as 'all' | 'completed' | 'incomplete')}
+                className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">Tất cả</option>
+                <option value="completed">Đã hoàn thành</option>
+                <option value="incomplete">Chưa hoàn thành</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <label htmlFor="sort-select" className="text-sm font-medium text-gray-600">
+                Sắp xếp:
+              </label>
+              <select
+                id="sort-select"
+                value={sortType}
+                onChange={(e) => setSortType(e.target.value as 'newest' | 'oldest' | 'alphabetical' | 'reverseAlphabetical')}
+                className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="newest">Mới nhất</option>
+                <option value="oldest">Cũ nhất</option>
+                <option value="alphabetical">Từ A-Z</option>
+                <option value="reverseAlphabetical">Từ Z-A</option>
+              </select>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <label htmlFor="sort-select" className="text-sm font-medium text-gray-600">
-              Sắp xếp:
-            </label>
-            <select
-              id="sort-select"
-              value={sortType}
-              onChange={(e) => setSortType(e.target.value as 'newest' | 'oldest' | 'alphabetical' | 'reverseAlphabetical')}
-              className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="newest">Mới nhất</option>
-              <option value="oldest">Cũ nhất</option>
-              <option value="alphabetical">Từ A-Z</option>
-              <option value="reverseAlphabetical">Từ Z-A</option>
-            </select>
-          </div>
+          <button
+            onClick={exportNotesData}
+            className="flex items-center space-x-1 px-4 py-1.5 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-all duration-200 shadow-sm hover:shadow"
+            title="Xuất dữ liệu"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Xuất dữ liệu</span>
+          </button>
         </div>
       )}
 
