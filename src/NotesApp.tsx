@@ -5,10 +5,12 @@ import { Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
 
 export function NotesApp() {
-  const notes = useQuery(api.notes.list) || [];
+  const [filterType, setFilterType] = useState<'all' | 'completed' | 'incomplete'>('all');
+  const notes = useQuery(api.notes.list, { filter: filterType === 'all' ? undefined : filterType }) || [];
   const createNote = useMutation(api.notes.create);
   const updateNote = useMutation(api.notes.update);
   const deleteNote = useMutation(api.notes.remove);
+  const toggleCompleted = useMutation(api.notes.toggleCompleted);
   
   const [newNoteContent, setNewNoteContent] = useState("");
   const [editingId, setEditingId] = useState<Id<"notes"> | null>(null);
@@ -58,6 +60,15 @@ export function NotesApp() {
       toast.success("Đã xóa ghi chú");
     } catch (error) {
       toast.error("Không thể xóa ghi chú");
+    }
+  };
+  
+  const handleToggleCompleted = async (noteId: Id<"notes">) => {
+    try {
+      const newStatus = await toggleCompleted({ id: noteId });
+      toast.success(newStatus ? "Đã đánh dấu hoàn thành" : "Đã bỏ đánh dấu hoàn thành");
+    } catch (error) {
+      toast.error("Không thể cập nhật trạng thái ghi chú");
     }
   };
 
@@ -136,23 +147,40 @@ export function NotesApp() {
         </form>
       </div>
 
-      {/* Sort Controls */}
+      {/* Sort and Filter Controls */}
       {notes.length > 0 && (
-        <div className="flex justify-end items-center space-x-2">
-          <label htmlFor="sort-select" className="text-sm font-medium text-gray-600">
-            Sắp xếp:
-          </label>
-          <select
-            id="sort-select"
-            value={sortType}
-            onChange={(e) => setSortType(e.target.value as 'newest' | 'oldest' | 'alphabetical' | 'reverseAlphabetical')}
-            className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="newest">Mới nhất</option>
-            <option value="oldest">Cũ nhất</option>
-            <option value="alphabetical">Từ A-Z</option>
-            <option value="reverseAlphabetical">Từ Z-A</option>
-          </select>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <label htmlFor="filter-select" className="text-sm font-medium text-gray-600">
+              Trạng thái:
+            </label>
+            <select
+              id="filter-select"
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value as 'all' | 'completed' | 'incomplete')}
+              className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">Tất cả</option>
+              <option value="completed">Đã hoàn thành</option>
+              <option value="incomplete">Chưa hoàn thành</option>
+            </select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <label htmlFor="sort-select" className="text-sm font-medium text-gray-600">
+              Sắp xếp:
+            </label>
+            <select
+              id="sort-select"
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value as 'newest' | 'oldest' | 'alphabetical' | 'reverseAlphabetical')}
+              className="bg-white border border-gray-200 text-gray-700 py-1 px-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="newest">Mới nhất</option>
+              <option value="oldest">Cũ nhất</option>
+              <option value="alphabetical">Từ A-Z</option>
+              <option value="reverseAlphabetical">Từ Z-A</option>
+            </select>
+          </div>
         </div>
       )}
 
@@ -197,12 +225,32 @@ export function NotesApp() {
                 </div>
               ) : (
                 <div>
-                  <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base mb-4">
-                    {note.content}
+                  <div className="flex items-start mb-4">
+                    <button
+                      onClick={() => handleToggleCompleted(note._id)}
+                      className={`flex-shrink-0 mr-3 h-6 w-6 rounded-full border-2 flex items-center justify-center ${
+                        note.completed 
+                          ? 'bg-green-500 border-green-500 text-white' 
+                          : 'border-gray-300 hover:border-green-500'
+                      }`}
+                      title={note.completed ? "Đánh dấu chưa hoàn thành" : "Đánh dấu hoàn thành"}
+                    >
+                      {note.completed && (
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
+                    <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-base">
+                      {note.content}
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <div className="text-sm text-gray-400 italic">
                       {formatDate(note._creationTime)}
+                      {note.completed && (
+                        <span className="ml-2 text-green-500 font-medium">Đã hoàn thành</span>
+                      )}
                     </div>
                     <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <button

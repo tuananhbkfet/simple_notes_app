@@ -6,6 +6,7 @@ const applicationTables = {
   notes: defineTable({
     content: v.string(),
     authorId: v.id("users"),
+    completed: v.optional(v.boolean()),
   }).index("by_author", ["authorId"]),
 };
 
