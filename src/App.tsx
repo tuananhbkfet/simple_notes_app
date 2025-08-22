@@ -14,7 +14,7 @@ export default function App() {
             <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            TUẤN ANH NOTE
+            Tuấn Anh Notes
           </h2>
           <div className="flex-1 overflow-hidden mx-4">
             <div className="whitespace-nowrap animate-marquee text-center text-yellow-400 font-bold text-2xl">
@@ -57,8 +57,8 @@ function Content() {
       </Authenticated>
       <Unauthenticated>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">ANT NOTE</h1>
-          <h2 className="text-4xl font-bold text-gray-700 mb-8">Ghi chú của bạn</h2>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">TUẤN ANH NOTES</h1>
+          <h2 className="text-3xl italic text-gray-600 mb-8">Note your way</h2>
           <p className="text-xl text-gray-600 mb-8">Đăng nhập để bắt đầu ghi chú</p>
           <SignInForm />
         </div>
