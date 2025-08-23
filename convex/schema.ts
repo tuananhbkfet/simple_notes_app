@@ -7,7 +7,9 @@ const applicationTables = {
     content: v.string(),
     authorId: v.id("users"),
     completed: v.optional(v.boolean()),
-  }).index("by_author", ["authorId"]),
+    group: v.optional(v.string()),
+  }).index("by_author", ["authorId"])
+    .index("by_author_and_group", ["authorId", "group"]),
 };
 
 export default defineSchema({

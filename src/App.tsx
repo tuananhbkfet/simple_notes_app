@@ -57,8 +57,8 @@ function Content() {
       </Authenticated>
       <Unauthenticated>
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">TUẤN ANH NOTES</h1>
-          <p className="text-xl text-gray-600 mb-8">Đăng nhập để bắt đầu ghi chú</p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">TUẤN ANH</h1>
+          <p className="text-xl text-gray-600 mb-8">Ghi chú cá nhân</p>
           <SignInForm />
         </div>
       </Unauthenticated>
