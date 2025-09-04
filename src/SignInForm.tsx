@@ -2,11 +2,22 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 
 export function SignInForm() {
   const { signIn } = useAuthActions();
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const loggedInUser = useQuery(api.auth.loggedInUser);
+
+  // Nếu đã đăng nhập thì chuyển về dashboard
+  if (loggedInUser) {
+    navigate("/dashboard");
+    return null;
+  }
 
   return (
     <div className="w-full">
@@ -17,19 +28,25 @@ export function SignInForm() {
           setSubmitting(true);
           const formData = new FormData(e.target as HTMLFormElement);
           formData.set("flow", flow);
-          void signIn("password", formData).catch((error) => {
-            let toastTitle = "";
-            if (error.message.includes("Invalid password")) {
-              toastTitle = "Mật khẩu không chính xác. Vui lòng thử lại.";
-            } else {
-              toastTitle =
-                flow === "signIn"
-                  ? "Không thể đăng nhập, bạn muốn đăng ký tài khoản mới?"
-                  : "Không thể đăng ký, bạn đã có tài khoản?";
-            }
-            toast.error(toastTitle);
-            setSubmitting(false);
-          });
+          void signIn("password", formData)
+            .then(() => {
+              // Đăng nhập thành công, chuyển đến dashboard
+              toast.success("Đăng nhập thành công!");
+              navigate("/dashboard");
+            })
+            .catch((error) => {
+              let toastTitle = "";
+              if (error.message.includes("Invalid password")) {
+                toastTitle = "Mật khẩu không chính xác. Vui lòng thử lại.";
+              } else {
+                toastTitle =
+                  flow === "signIn"
+                    ? "Không thể đăng nhập, bạn muốn đăng ký tài khoản mới?"
+                    : "Không thể đăng ký, bạn đã có tài khoản?";
+              }
+              toast.error(toastTitle);
+              setSubmitting(false);
+            });
         }}
       >
         <input

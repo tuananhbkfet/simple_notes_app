@@ -3,8 +3,27 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export function NotesApp() {
+  const navigate = useNavigate();
+  const loggedInUser = useQuery(api.auth.loggedInUser);
+  
+  // Kiểm tra đăng nhập
+  if (loggedInUser === undefined) {
+    // Đang tải
+    return (
+      <div className="flex justify-center items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+  
+  if (loggedInUser === null) {
+    // Chưa đăng nhập, chuyển hướng đến trang đăng nhập
+    navigate("/signin");
+    return null;
+  }
   const [filterType, setFilterType] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [filterGroup, setFilterGroup] = useState<string | undefined>(undefined);
   const groups = useQuery(api.notes.listGroups) || [];
