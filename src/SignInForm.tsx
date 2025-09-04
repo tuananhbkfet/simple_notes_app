@@ -11,13 +11,6 @@ export function SignInForm() {
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-  const loggedInUser = useQuery(api.auth.loggedInUser);
-
-  // Nếu đã đăng nhập thì chuyển về dashboard
-  if (loggedInUser) {
-    navigate("/dashboard");
-    return null;
-  }
 
   return (
     <div className="w-full">

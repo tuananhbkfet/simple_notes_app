@@ -9,20 +9,13 @@ export function NotesApp() {
   const navigate = useNavigate();
   const loggedInUser = useQuery(api.auth.loggedInUser);
   
-  // Kiểm tra đăng nhập
+  // Kiểm tra đang tải
   if (loggedInUser === undefined) {
-    // Đang tải
     return (
       <div className="flex justify-center items-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
     );
-  }
-  
-  if (loggedInUser === null) {
-    // Chưa đăng nhập, chuyển hướng đến trang đăng nhập
-    navigate("/signin");
-    return null;
   }
   const [filterType, setFilterType] = useState<'all' | 'completed' | 'incomplete'>('all');
   const [filterGroup, setFilterGroup] = useState<string | undefined>(undefined);
