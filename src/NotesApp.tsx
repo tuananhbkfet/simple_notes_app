@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-export function NotesApp() {
+interface NotesAppProps {
+  initialGroup?: string;
+}
+
+export function NotesApp({ initialGroup = undefined }: NotesAppProps) {
   const navigate = useNavigate();
   const loggedInUser = useQuery(api.auth.loggedInUser);
   
@@ -18,7 +22,7 @@ export function NotesApp() {
     );
   }
   const [filterType, setFilterType] = useState<'all' | 'completed' | 'incomplete'>('all');
-  const [filterGroup, setFilterGroup] = useState<string | undefined>(undefined);
+  const [filterGroup, setFilterGroup] = useState<string | undefined>(initialGroup);
   const groups = useQuery(api.notes.listGroups) || [];
   const notes = useQuery(api.notes.list, { 
     filter: filterType === 'all' ? undefined : filterType, 
@@ -162,6 +166,13 @@ export function NotesApp() {
       behavior: 'smooth'
     });
   };
+  
+  // Sử dụng initialGroup khi component được tạo
+  useEffect(() => {
+    if (initialGroup) {
+      setFilterGroup(initialGroup);
+    }
+  }, [initialGroup]);
   
   // Xử lý thêm nhóm mới khi tạo ghi chú
   const handleAddNewGroup = () => {
