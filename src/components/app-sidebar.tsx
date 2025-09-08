@@ -71,16 +71,22 @@ function GroupList() {
   );
 }
 
+// Import theme toggle component
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 export function AppSidebar() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   return (
     <SidebarContent className="border-r">
-      <SidebarHeader className="flex h-16 items-center px-4 transition-[width,height] ease-linear">
+      <SidebarHeader className="flex h-16 items-center px-4 justify-between transition-[width,height] ease-linear">
         <div className="flex items-center gap-2 text-lg font-semibold">
           <BookMarked className="h-6 w-6 text-primary" />
           <span>ANT Notes</span>
         </div>
+        <ThemeToggle />
       </SidebarHeader>
       <div className="flex flex-col flex-1">
         <div className="px-2 pb-2 pt-4">
