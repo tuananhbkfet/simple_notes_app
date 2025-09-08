@@ -6,13 +6,15 @@
   --color-light: #ffffff;
   --color-dark: #171717;
   
-  /* Sidebar specific variables */
+  /* Sidebar specific variables - only light mode now */
   --sidebar-bg-light: 210 40% 98%;
-  --sidebar-bg-dark: 222.2 84% 4.9%;
   --sidebar-text-light: 222.2 47.4% 11.2%;
-  --sidebar-text-dark: 210 40% 98%;
+  
+  /* Always use light mode variables */
+  --sidebar-bg: var(--sidebar-bg-light);
+  --sidebar-text: var(--sidebar-text-light);
 
-  /* shadcn required CSS variables */
+  /* shadcn required CSS variables - light mode values only */
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;
@@ -102,28 +104,26 @@ body {
   background: #a8a8a8;
 }
 
-/* Mobile sidebar light mode override */
-@media (max-width: 768px) {
-  [data-sidebar="sidebar"][data-mobile="true"] {
-    background-color: hsl(var(--sidebar-bg-light)) !important;
-    color: hsl(var(--sidebar-text-light)) !important;
-  }
-  
-  /* Ensure all text and icons in mobile sidebar are visible */
-  [data-sidebar="sidebar"][data-mobile="true"] button,
-  [data-sidebar="sidebar"][data-mobile="true"] a,
-  [data-sidebar="sidebar"][data-mobile="true"] h2,
-  [data-sidebar="sidebar"][data-mobile="true"] span,
-  [data-sidebar="sidebar"][data-mobile="true"] svg {
-    color: hsl(var(--sidebar-text-light)) !important;
-  }
+/* Sidebar light mode for all devices */
+[data-sidebar="sidebar"] {
+  background-color: hsl(var(--sidebar-bg-light)) !important;
+  color: hsl(var(--sidebar-text-light)) !important;
+}
 
-  /* Ensure search box is visible */
-  [data-sidebar="sidebar"][data-mobile="true"] input {
-    background-color: white;
-    color: hsl(var(--foreground));
-    border: 1px solid hsl(var(--border));
-  }
+/* Ensure all text and icons in sidebar are visible */
+[data-sidebar="sidebar"] button,
+[data-sidebar="sidebar"] a,
+[data-sidebar="sidebar"] h2,
+[data-sidebar="sidebar"] span,
+[data-sidebar="sidebar"] svg {
+  color: hsl(var(--sidebar-text-light)) !important;
+}
+
+/* Ensure search box is visible */
+[data-sidebar="sidebar"] input {
+  background-color: white;
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
 }
 
 

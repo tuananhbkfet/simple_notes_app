@@ -204,10 +204,12 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+            className="w-[--sidebar-width] p-0 bg-sidebar text-sidebar-foreground [&>button]:hidden"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+                "--background-color": "hsl(var(--sidebar-bg-light))",
+                "--text-color": "hsl(var(--sidebar-text-light))"
               } as React.CSSProperties
             }
             side={side}
@@ -258,6 +260,10 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
+            style={{
+              "--background-color": "hsl(var(--sidebar-bg-light))",
+              "--text-color": "hsl(var(--sidebar-text-light))"
+            } as React.CSSProperties}
             className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
             {children}

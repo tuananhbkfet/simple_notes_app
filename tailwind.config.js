@@ -61,10 +61,8 @@ module.exports = {
           foreground: "hsl(var(--popover-foreground))",
         },
         sidebar: {
-          DEFAULT: "hsl(var(--sidebar-bg-dark))",
-          foreground: "hsl(var(--sidebar-text-dark))",
-          light: "hsl(var(--sidebar-bg-light))",
-          "light-foreground": "hsl(var(--sidebar-text-light))",
+          DEFAULT: "hsl(var(--sidebar-bg-light))",
+          foreground: "hsl(var(--sidebar-text-light))",
         },
       },
       spacing: {
