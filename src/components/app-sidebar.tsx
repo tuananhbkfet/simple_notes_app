@@ -28,6 +28,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -35,6 +36,15 @@ import { api } from "../../convex/_generated/api";
 function GroupList() {
   const navigate = useNavigate();
   const groups = useQuery(api.notes.listGroups) || [];
+  const { isMobile, setOpenMobile } = useSidebar();
+  
+  // Hàm để chuyển hướng và đóng sidebar trên mobile
+  const navigateAndClose = (path: string) => {
+    navigate(path);
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
   
   return (
     <>
@@ -49,7 +59,7 @@ function GroupList() {
           return (
             <SidebarMenuItem key={groupName}>
               <SidebarMenuButton 
-                onClick={() => navigate(`/dashboard/groups/${encodeURIComponent(groupName)}`)}
+                onClick={() => navigateAndClose(`/dashboard/groups/${encodeURIComponent(groupName)}`)}
               >
                 <Folder className="mr-2 h-4 w-4" />
                 <span>{groupName}</span>
@@ -60,7 +70,7 @@ function GroupList() {
       )}
       <SidebarMenuItem>
         <SidebarMenuButton 
-          onClick={() => navigate("/dashboard/groups/new")}
+          onClick={() => navigateAndClose("/dashboard/groups/new")}
           className="text-muted-foreground hover:text-foreground"
         >
           <Plus className="mr-2 h-4 w-4" />
@@ -71,11 +81,17 @@ function GroupList() {
   );
 }
 
-import { useIsMobile } from "@/hooks/use-mobile";
-
 export function AppSidebar() {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
+  const { isMobile, setOpenMobile } = useSidebar();
+  
+  // Hàm để chuyển hướng và đóng sidebar trên mobile
+  const navigateAndClose = (path: string) => {
+    navigate(path);
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   return (
     <SidebarContent className="border-r">
@@ -101,19 +117,19 @@ export function AppSidebar() {
             <h2 className="text-xs font-semibold tracking-tight">Chính</h2>
           </div>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => navigate("/dashboard")}>
+            <SidebarMenuButton onClick={() => navigateAndClose("/dashboard")}>
               <BookText className="mr-2 h-4 w-4" />
               <span>Tất cả ghi chú</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => navigate("/dashboard/starred")}>
+            <SidebarMenuButton onClick={() => navigateAndClose("/dashboard/starred")}>
               <Star className="mr-2 h-4 w-4" />
               <span>Ghi chú đánh dấu</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => navigate("/dashboard/recent")}>
+            <SidebarMenuButton onClick={() => navigateAndClose("/dashboard/recent")}>
               <PenSquare className="mr-2 h-4 w-4" />
               <span>Gần đây</span>
             </SidebarMenuButton>
@@ -132,7 +148,7 @@ export function AppSidebar() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/dashboard/settings")}
+            onClick={() => navigateAndClose("/dashboard/settings")}
           >
             <Settings className="h-4 w-4" />
           </Button>
