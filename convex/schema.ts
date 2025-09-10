@@ -8,6 +8,8 @@ const applicationTables = {
     authorId: v.id("users"),
     completed: v.optional(v.boolean()),
     group: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    imagePrompt: v.optional(v.string()),
   }).index("by_author", ["authorId"])
     .index("by_author_and_group", ["authorId", "group"]),
 };

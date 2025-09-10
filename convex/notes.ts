@@ -56,6 +56,8 @@ export const create = mutation({
   args: {
     content: v.string(),
     group: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    imagePrompt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -72,6 +74,8 @@ export const create = mutation({
       authorId: userId,
       completed: false,
       group: args.group && args.group.trim() !== "" ? args.group.trim() : undefined,
+      imageUrl: args.imageUrl,
+      imagePrompt: args.imagePrompt,
     });
   },
 });
@@ -81,6 +85,8 @@ export const update = mutation({
     id: v.id("notes"),
     content: v.string(),
     group: v.optional(v.string()),
+    imageUrl: v.optional(v.string()),
+    imagePrompt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -104,6 +110,8 @@ export const update = mutation({
     await ctx.db.patch(args.id, {
       content: args.content.trim(),
       group: args.group !== undefined ? (args.group.trim() !== "" ? args.group.trim() : undefined) : note.group,
+      imageUrl: args.imageUrl !== undefined ? args.imageUrl : note.imageUrl,
+      imagePrompt: args.imagePrompt !== undefined ? args.imagePrompt : note.imagePrompt,
     });
   },
 });
